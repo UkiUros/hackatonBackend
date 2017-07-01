@@ -13,6 +13,27 @@ class DbHandler {
         $this->conn = $db->connect();
     }
 
+    public function getLocationData($user_id) {
+      $stmt = $this->conn->prepare("SELECT * FROM location WHERE user_id = ?");
+
+      $stmt->bind_param("s", $user_id);
+      $stmt->execute();
+      $result = $stmt->get_result();
+      $stmt->close();
+      return $result;
+    }
+
+    public function getDeviceData($user_id) {
+      $stmt = $this->conn->prepare("SELECT * FROM device_data WHERE user_id = ?");
+
+      $stmt->bind_param("s", $user_id);
+      $stmt->execute();
+      $result = $stmt->get_result();
+      $stmt->close();
+      return $result;
+    }
+// -----------------------------------------------//
+
     public function getStatus($app_key) {
         $stmt = $this->conn->prepare("SELECT app_version, status FROM status ORDER BY created_at DESC LIMIT 1");
         $result = $stmt->execute();

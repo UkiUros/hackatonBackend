@@ -10,18 +10,39 @@
 
     $app = new \Slim\Slim();
 
-    // System status
-    $app->post('/status', function() use ($app) {
+    $app->get('/getLocationData',  function() use ($app) {
+              $user_id = $app->request->get('user_id');
 
-               // reading post params
-               $app_key = $app->request->post('app_key');
+              $db = new DbHandler();
+              $result = $db->getLocationData($uuid);
 
-               $db = new DbHandler();
-               $response = $db->getStatus($app_key);
+              if(is_null($result)){
+                $response["error"] = "no results";
+              }else{
+                $response["locations"] = array();
+                // pushing single location into array
+                while ($row = $result->fetch_assoc()) {
+                  $tmp = array();
+                  $tmp["location_id"] = $row["id"];
+                  $tmp["user_id"] = $row["user_id"];
+                  $tmp["latitude"] = $row["latitude"];
+                  $tmp["longitude"] = $row["longitude"];
+                  $tmp["address"] = $row["address"];
+                  $tmp["city"] = $row["city"];
+                  $tmp["state"] = $row["state"];
+                  $tmp["country"] = $row["country"];
+                  $tmp["potal_code"] = $row["potal_code"];
+                  $tmp["known_address"] = $row["known_address"];
+                  $tmp["created_at"] = $row["created_at"];
 
-               // echo json response
-               echoRespnse(200, $response);
+                  array_push($response["locations"], $tmp);
+                }
+              }
+
+              echoRespnse(200, $response);
     });
+
+    //----------------------------------------------------//
 
     // User register
     $app->post('/user/register', function() use ($app) {
