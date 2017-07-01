@@ -31,7 +31,7 @@
                   $tmp["city"] = $row["city"];
                   $tmp["state"] = $row["state"];
                   $tmp["country"] = $row["country"];
-                  $tmp["potal_code"] = $row["potal_code"];
+                  $tmp["postal_code"] = $row["postal_code"];
                   $tmp["known_address"] = $row["known_address"];
                   $tmp["created_at"] = $row["created_at"];
 
