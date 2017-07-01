@@ -14,7 +14,7 @@
               $user_id = $app->request->get('user_id');
 
               $db = new DbHandler();
-              $result = $db->getLocationData($uuid);
+              $result = $db->getLocationData($user_id);
 
               if(is_null($result)){
                 $response["error"] = "no results";
