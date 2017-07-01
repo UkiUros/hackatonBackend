@@ -55,7 +55,6 @@ class DbHandler {
           $response["error"] = 0;
           $response["error_message"] = "success";
         } else {
-          // Failed to create user
           $response["error"] = 4444;
           $response["error_message"] = "Failed to insert new location data";
         }
@@ -77,11 +76,45 @@ class DbHandler {
           $response["error"] = 0;
           $response["error_message"] = "success";
         } else {
-          // Failed to create user
           $response["error"] = 4444;
           $response["error_message"] = "Failed to insert new location data";
         }
         return $response;
+    }
+
+    public function setSafeLocation($user_id, $latitude, $longitude) {
+        $response = array();
+        $stmt = $this->conn->prepare("INSERT INTO safe_location
+        (user_id, latitude, longitude)
+        VALUES(?, ?, ?)");
+        $stmt->bind_param("sss", $user_id, $latitude, $longitude);
+
+        $result = $stmt->execute();
+        $stmt->close();
+
+        if($result) {
+          $response["error"] = 0;
+          $response["error_message"] = "success";
+        } else {
+          // Failed to create user
+          $response["error"] = 4444;
+          $response["error_message"] = "Failed to insert new safe location data";
+        }
+        return $response;
+    }
+
+    public function getSafeLocation($user_id) {
+      $stmt = $this->conn->prepare("SELECT *
+        FROM safe_location
+        WHERE user_id = ?
+        ORDER BY created_at DESC
+        LIMIT 3");
+
+      $stmt->bind_param("s", $user_id);
+      $stmt->execute();
+      $result = $stmt->get_result();
+      $stmt->close();
+      return $result;
     }
 // -----------------------------------------------//
 

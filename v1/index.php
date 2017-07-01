@@ -105,6 +105,42 @@
                echoRespnse(200, $response);
     });
 
+    $app->post('/safe_location', function() use ($app) {
+               // reading post params
+               $user_id = $app->request->post('user_id');
+               $latitude = $app->request->post('latitude');
+               $longitude = $app->request->post('longitude');
+
+               $db = new DbHandler();
+               $response = $db->setSafeLocation($user_id, $latitude, $longitude);
+
+               // echo json response
+               echoRespnse(200, $response);
+    });
+
+    $app->get('/getSafeLocation',  function() use ($app) {
+              $user_id = $app->request->get('user_id');
+
+              $db = new DbHandler();
+              $result = $db->getSafeLocation($user_id);
+
+              if(is_null($result)){
+                $response["error"] = "no results";
+              }else{
+                $response["safe_locations"] = array();
+                // pushing single location into array
+                while ($row = $result->fetch_assoc()) {
+                  $tmp = array();
+                  $tmp["user_id"] = $row["user_id"];
+                  $tmp["latitude"] = $row["latitude"];
+                  $tmp["longitude"] = $row["longitude"];
+
+                  array_push($response["safe_locations"], $tmp);
+                }
+              }
+              echoRespnse(200, $response);
+    });
+
     //----------------------------------------------------//
 
     // User register
