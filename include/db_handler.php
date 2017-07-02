@@ -17,7 +17,8 @@ class DbHandler {
       $stmt = $this->conn->prepare("SELECT *
         FROM location
         WHERE user_id = ?
-        ORDER BY created_at DESC");
+        ORDER BY created_at DESC
+        LIMIT 20");
 
       $stmt->bind_param("s", $user_id);
       $stmt->execute();
